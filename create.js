@@ -1,20 +1,14 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Container,
-  Box,
-  Typography,
-  Grid,
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Grid } from "@mui/material";
 
-function RecordForm() {
+function ModalComponent() {
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    age: "",
   });
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -23,77 +17,73 @@ function RecordForm() {
     });
   };
 
+  // Open the modal
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  // Close the modal
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here, e.g., sending data to an API
     console.log("Form submitted:", formData);
+    handleClose(); // Close modal after submitting
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Create New Record
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            {/* Name Field */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Name"
-                variant="outlined"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+    <div>
+      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+        Open Form
+      </Button>
 
-            {/* Email Field */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Email"
-                variant="outlined"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                type="email"
-                required
-              />
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Create New Record</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Name"
+                  variant="outlined"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  variant="outlined"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  type="email"
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <DialogActions>
+                  <Button onClick={handleClose} color="secondary">
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                </DialogActions>
+              </Grid>
             </Grid>
-
-            {/* Age Field */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Age"
-                variant="outlined"
-                name="age"
-                value={formData.age}
-                onChange={handleChange}
-                type="number"
-                required
-              />
-            </Grid>
-
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </Container>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
 
-export default RecordForm;
+export default ModalComponent;
