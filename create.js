@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Container,
+  Box,
+  Typography,
+  Grid,
+} from "@mui/material";
 
-const MyForm = () => {
-  // State to hold form values and error messages
+function RecordForm() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    age: '',
+    name: "",
+    email: "",
+    age: "",
   });
-  const [errors, setErrors] = useState({});
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -18,76 +23,77 @@ const MyForm = () => {
     });
   };
 
-  // Validate form data
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-    if (!formData.age) newErrors.age = 'Age is required';
-    else if (isNaN(formData.age)) newErrors.age = 'Age must be a number';
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Return true if no errors
-  };
-
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      alert('Form submitted successfully!');
-      // Handle form submission logic here (e.g., sending data to an API)
-    } else {
-      alert('Please fix the errors before submitting.');
-    }
+    // Handle form submission logic here, e.g., sending data to an API
+    console.log("Form submitted:", formData);
   };
 
   return (
-    <div>
-      <h1>My Form</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
-        </div>
+    <Container maxWidth="sm">
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Create New Record
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            {/* Name Field */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Name"
+                variant="outlined"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
 
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-        </div>
+            {/* Email Field */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                variant="outlined"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                type="email"
+                required
+              />
+            </Grid>
 
-        <div>
-          <label htmlFor="age">Age:</label>
-          <input
-            type="text"
-            id="age"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-          />
-          {errors.age && <p style={{ color: 'red' }}>{errors.age}</p>}
-        </div>
+            {/* Age Field */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Age"
+                variant="outlined"
+                name="age"
+                value={formData.age}
+                onChange={handleChange}
+                type="number"
+                required
+              />
+            </Grid>
 
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-      </form>
-    </div>
+            {/* Submit Button */}
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+              >
+                Submit
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Box>
+    </Container>
   );
-};
+}
 
-export default MyForm;
+export default RecordForm;
