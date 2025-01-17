@@ -27,6 +27,13 @@ function ModalComponent() {
     setOpen(false);
   };
 
+  const getTodayDate = () => {
+          const month = today.getMonth()+1;
+      const year = today.getFullYear();
+      const date = today. getDate();
+      const currentDate = month + "/" + date + "/" + year;
+  }
+
   // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
