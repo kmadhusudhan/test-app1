@@ -1,0 +1,40 @@
+<dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.13</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.13</version>
+    </dependency>
+
+
+
+public static String createSession() throws Exception {
+        // Prepare the request body
+        String jsonPayload = "{\"kind\": \"spark\", \"conf\": {\"spark.jars.packages\": \"org.apache.spark:spark-sql_2.12:3.1.2\"}}";
+
+        // Create HTTP client
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            // Prepare the HTTP POST request
+            HttpPost post = new HttpPost(SPARK_SESSION_URL);
+            post.setHeader("Content-Type", "application/json");
+            post.setEntity(new StringEntity(jsonPayload));
+
+            // Send the request and get the response
+            HttpResponse response = client.execute(post);
+            String responseString = EntityUtils.toString(response.getEntity());
+
+            // Print the response (which contains the session ID)
+            System.out.println("Response from Livy: " + responseString);
+            return responseString;
+        }
+    }
+
+public static void main(String[] args) throws Exception {
+        // Create a session with Livy
+        String sessionResponse = createSession();
+        // Print session response (includes session ID)
+        System.out.println(sessionResponse);
+    }
