@@ -9,7 +9,12 @@
         <version>4.4.13</version>
     </dependency>
 
-
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils
 
 public static String createSession() throws Exception {
         // Prepare the request body
