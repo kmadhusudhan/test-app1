@@ -72,7 +72,17 @@ private static String checkSessionStatus(String sessionId) throws IOException {
     }
 }
 
-private static String checkJobStatus(String sessionId, String statementId) throws IOException {
+while (status.equals("starting") || status.equals("running")) {
+            status = checkJobStatusAndGetResult(sessionId, statementId);
+            if (status.contains("Query result")) {
+                System.out.println(status);  // Print the result
+                break;
+            }
+            Thread.sleep(5000);  // Check every 5 seconds
+        }
+
+
+private static String checkJobStatusAndGetResult(String sessionId, String statementId) throws IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet get = new HttpGet(LIVY_URL + "/sessions/" + sessionId + "/statements/" + statementId);
 
@@ -81,9 +91,18 @@ private static String checkJobStatus(String sessionId, String statementId) throw
                 String responseString = EntityUtils.toString(responseEntity);
                 System.out.println("Job status response: " + responseString);
 
+                // Check if the job is complete and available
                 if (responseString.contains("\"state\": \"available\"")) {
-                    return "Job complete!";
+                    // Job has completed, extract the result from the "output" field
+                    if (responseString.contains("\"data\":")) {
+                        // Extract the data (query results)
+                        String resultData = responseString.split("\"data\":")[1].split("}")[0];
+                        return "Query result: " + resultData;
+                    } else {
+                        return "No data found in the output.";
+                    }
                 }
+
                 return "Job still running...";
             }
         }
