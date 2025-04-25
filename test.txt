@@ -47,3 +47,27 @@ try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
                 return statementId.trim();
             }
         }
+
+
+private static String checkSessionStatus(String sessionId) throws IOException {
+    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        HttpGet get = new HttpGet(LIVY_URL + "/sessions/" + sessionId);
+        try (CloseableHttpResponse response = httpClient.execute(get)) {
+            HttpEntity responseEntity = response.getEntity();
+            String responseString = EntityUtils.toString(responseEntity);
+            System.out.println("Session status response: " + responseString);
+
+            // Parse session state from the response
+            if (responseString.contains("\"state\": \"starting\"")) {
+                return "Session is starting, retrying...";
+            } else if (responseString.contains("\"state\": \"idle\"")) {
+                return "Session is idle and ready.";
+            } else if (responseString.contains("\"state\": \"running\"")) {
+                return "Session is running.";
+            } else if (responseString.contains("\"state\": \"error\"")) {
+                return "Session failed to start.";
+            }
+            return "Unknown session state.";
+        }
+    }
+}
