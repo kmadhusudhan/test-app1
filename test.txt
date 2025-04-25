@@ -23,3 +23,27 @@
             }
         }
     }
+
+
+try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(LIVY_URL + "/sessions/" + sessionId + "/statements");
+
+            // Create the job (query) to run in Spark
+            String jsonPayload = "{"
+                    + "\"code\": \"spark.sql(\\\"SELECT * FROM my_table LIMIT 10\\\").show()\""
+                    + "}";
+
+            StringEntity entity = new StringEntity(jsonPayload);
+            post.setEntity(entity);
+            post.setHeader("Content-Type", "application/json");
+
+            try (CloseableHttpResponse response = httpClient.execute(post)) {
+                HttpEntity responseEntity = response.getEntity();
+                String responseString = EntityUtils.toString(responseEntity);
+                System.out.println("Job response: " + responseString);
+
+                // Extract the statement ID from the response
+                String statementId = responseString.split("\"id\":")[1].split(",")[0];
+                return statementId.trim();
+            }
+        }
