@@ -113,3 +113,21 @@ String status = checkJobStatus(sessionId, statementId);
             Thread.sleep(5000);  // Check every 5 seconds
             status = checkJobStatus(sessionId, statementId);
         }
+
+ private static String checkJobStatus(String sessionId, String statementId) throws IOException {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet(LIVY_URL + "/sessions/" + sessionId + "/statements/" + statementId);
+
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                HttpEntity responseEntity = response.getEntity();
+                String responseString = EntityUtils.toString(responseEntity);
+                System.out.println("Job status response: " + responseString);
+
+                if (responseString.contains("\"state\": \"available\"")) {
+                    return "Job complete!";
+                }
+                return "Job still running...";
+            }
+        }
+    }
+
